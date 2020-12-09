@@ -147,12 +147,14 @@
           <option :key="option.value" v-for="option in selectBoxData" :selected="option.value == 'POST'" :value="option.value">{{ option.text }}</option>
         </select>
              
-        <input type="text" size="35" placeholder="" value="http://3.36.37.170:8083/connectors">
-        <button name="btnSend" >Request</button>
+        <input type="text" size="26" placeholder="" value="http://3.36.37.170:8083/connectors"><input type="text" id="newConnName" v-model="connectorName" size="14" :required=true placeholder="생성할 Connector Name" value="">
+        <br><label>TopicName:</label><input type="text" id="connTopicName" v-model="connTopicName" size="10" :required=true>
+        <button name="btnSend" @click="createConnector">Request</button>
+        <br>
         <br>
 
-        <span>Sink Properties</span><br>
-        <textarea cols="58" rows="17">
+        <span>Sink Properties (Sample)</span><br>
+        <textarea cols="58" rows="17" readonly>
          {
           "name": "[Sink Connector 이름]",
               "config": {
@@ -162,8 +164,10 @@
                   "hdfs.url": "hdfs://namenode1:9000",
                   "hadoop.conf.dir": "/home/ubuntu/hadoop/etc/hadoop",
                   "hadoop.home": "/home/ubuntu/hadoop",
-                  "flush.size": "100",
-                  "rotate.interval.ms": "1000"
+                  "flush.size": "3",
+                  "rotate.interval.ms": "1000",
+                  "value.converter":"io.confluent.connect.json.JsonSchemaConverter",
+                  "value.converter.schema.registry.url":"http://localhost:8081"
               }
           }
         </textarea>
@@ -172,7 +176,14 @@
  
 
         <span class="item-id"> Response Data </span>
-        <p class="item-short-description"></p>
+         <hr />
+        
+        <json-viewer
+          :value="resConnectorCreate"
+          :expand-depth=5
+          copyable
+          boxed
+          sort></json-viewer>
       </li>
 <br>
        <br/>
@@ -229,6 +240,9 @@ export default {
       topics:[],
       connectors:[],
       topicName: '',
+      connectorName:'',
+      resConnectorCreate:{},
+      connTopicName:'',
     }
   },
   created(){   
@@ -397,6 +411,75 @@ export default {
       //       console.error(err);
       //   });
     }, //end function
+
+    createConnector:  function() {
+      if(!this.connectorName){
+        alert("생성할 Connector이름을 입력하세요")
+        return ;
+      }
+
+      if(!this.connTopicName){
+        alert("Topic 이름을 입력하세요")
+        return ;
+      }
+
+      this.resConnectorCreate={};
+      var url=`${config.connectorUrl}/connectors/`
+      
+
+      // const data = {
+      //   "records":[{"value":{"name":"test3"}}]
+      // };
+
+      let data=''
+      data +='{'
+      data +=    '"name": "'+this.connectorName+'",'
+      data +=        '"config": {'
+      data +=            '"connector.class": "io.confluent.connect.hdfs3.Hdfs3SinkConnector",'
+      data +=            '"tasks.max": "10",'
+      data +=            '"topics":"'+this.connTopicName+'",'
+      data +=            '"hdfs.url": "hdfs://namenode1:9000",'
+      data +=            '"hadoop.conf.dir": "/home/ubuntu/hadoop/etc/hadoop",'
+      data +=            '"hadoop.home": "/home/ubuntu/hadoop",'
+      data +=            '"flush.size": "3",'
+      data +=            '"rotate.interval.ms": "1000",'
+      data +=            '"value.converter":"io.confluent.connect.json.JsonSchemaConverter",'
+      data +=            '"value.converter.schema.registry.url":"http://localhost:8081"'
+      data +=        '}'
+      data +=    '}'
+
+      console.log(data);
+      let records= JSON.stringify(data)
+      
+
+
+     
+    // const qs = require('qs');
+    const HTTP = axios.create({
+        baseURL: url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+    })
+
+    HTTP.post('',
+    {
+      records
+    }
+    )
+    .then(response => {
+      alert("Success Create Connector!")
+      console.log(response)
+      this.resConnectorCreate=response
+    })
+    .catch(e => {
+      console.log('Error: ' + e)
+      this.resConnectorCreate='{"error":"Connector Create Error!!!"},'+e;
+    })
+      
+    }, //end function
+
 
   }    
 }
