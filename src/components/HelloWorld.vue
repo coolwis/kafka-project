@@ -431,29 +431,32 @@ export default {
       //   "records":[{"value":{"name":"test3"}}]
       // };
 
-      let data=''
-      data +='{'
-      data +=    '"name": "'+this.connectorName+'",'
-      data +=        '"config": {'
-      data +=            '"connector.class": "io.confluent.connect.hdfs3.Hdfs3SinkConnector",'
-      data +=            '"tasks.max": "10",'
-      data +=            '"topics":"'+this.connTopicName+'",'
-      data +=            '"hdfs.url": "hdfs://namenode1:9000",'
-      data +=            '"hadoop.conf.dir": "/home/ubuntu/hadoop/etc/hadoop",'
-      data +=            '"hadoop.home": "/home/ubuntu/hadoop",'
-      data +=            '"flush.size": "3",'
-      data +=            '"rotate.interval.ms": "1000",'
-      data +=            '"value.converter":"io.confluent.connect.json.JsonSchemaConverter",'
-      data +=            '"value.converter.schema.registry.url":"http://localhost:8081"'
-      data +=        '}'
-      data +=    '}'
 
-      console.log(data);
-      let records= JSON.stringify(data)
-      
+      let name=this.connectorName
 
+      let configJson=''
+      configJson +=        '{'
+      configJson +=            '"connector.class": "io.confluent.connect.hdfs3.Hdfs3SinkConnector",'
+      configJson +=            '"tasks.max": "3",'
+      configJson +=            '"topics":"'+this.connTopicName+'",'
+      configJson +=            '"hdfs.url": "hdfs://namenode1:9000",'
+      configJson +=            '"hadoop.conf.dir": "/home/ubuntu/hadoop/etc/hadoop",'
+      configJson +=            '"hadoop.home": "/home/ubuntu/hadoop",'
+      configJson +=            '"flush.size": "3",'
+      configJson +=            '"rotate.interval.ms": "1000",'
+      // configJson +=            '"key.converter":"io.confluent.connect.avro.AvroConverter",'
+      // configJson +=            '"value.converter":"io.confluent.connect.avro.AvroConverter",'
+      configJson +=            '"value.converter":"org.apache.kafka.connect.json.JsonConverter",'
 
-     
+      configJson +=            '"key.converter":"org.apache.kafka.connect.storage.StringConverter",'
+      // configJson +=            '"key.converter":"io.confluent.connect.json.JsonSchemaConverter",'
+      // configJson +=            '"key.converter":"org.apache.kafka.connect.json.JsonConverter",'
+      configJson +=            '"key.converter.schema.registry.url":"http://localhost:8081",'
+      // configJson +=            '"value.converter":"io.confluent.connect.json.JsonSchemaConverter",'
+      configJson +=            '"value.converter.schema.registry.url":"http://localhost:8081"'
+      configJson +=        '}'
+
+      // let records= JSON.stringify(data)
     // const qs = require('qs');
     const HTTP = axios.create({
         baseURL: url,
@@ -463,15 +466,17 @@ export default {
         }
     })
 
+
     HTTP.post('',
     {
-      records
+      "name": name, 
+      "config": JSON.parse(configJson)    
     }
     )
     .then(response => {
       alert("Success Create Connector!")
       console.log(response)
-      this.resConnectorCreate=response
+      this.resConnectorCreate=response.data
     })
     .catch(e => {
       console.log('Error: ' + e)
