@@ -8,8 +8,10 @@ import AxiosPlugin from 'vue-axios-cors'
 
 import JsonViewer from 'vue-json-viewer'
 
+
 // Import JsonViewer as a Vue.js plugin
 Vue.use(JsonViewer)
+// Vue.use(vueJsonEditor)
 
 Vue.config.productionTip = false
 // Vue.prototype.$http =axios
