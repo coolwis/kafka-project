@@ -20,17 +20,16 @@
     <ul>
       <li>
         <a
-          href="http://ec2-3-36-37-170.ap-northeast-2.compute.amazonaws.com:9870/explorer.html#/"
+          href="http://ec2-3-36-37-170.ap-northeast-2.compute.amazonaws.com:9870/explorer.html#/topics"
           target="_blank"
         >
-          Hadoop Data File 조회
+          Hadoop Topic Data 조회
         </a>
       </li>
     </ul>
     <br />
 
     <h1>[2] kafka Rest Api</h1>
-    <!-- <h4> <font color="red">(Cross Domain (CORS) 설정 이슈로 수정 중입니다.)</font></h4> -->
     <br />
     <ul class="list">
       <li style="text-align: left">
@@ -57,10 +56,6 @@
         <span> Response Data </span>
         <br />
         <br />
-        <!-- <div class="item-line" v-bind:key="item" v-for="item in topics">
-          <span class="item-id">{{item}}</span>
-        </div> -->
-
         <hr />
 
         <json-viewer
@@ -74,6 +69,36 @@
       <br />
       <br />
       <br />
+
+       <!-- <li style="text-align: left">
+        <font color="blue"> Kafka Topic 삭제 </font>
+        <br />
+        <select>
+          <option
+            :key="option.value"
+            v-for="option in selectBoxData"
+            :value="option.value"
+            :selected="option.value == 'DELETE'"
+          >
+            {{ option.text }}
+          </option>
+        </select>
+
+        <input
+          type="text"
+          size="35"
+          placeholder="topic name"
+          v-model="deleteTopicName"
+          value=""
+        />
+        <button name="btnSend" @click="deleteTopic">Request</button>
+        
+      </li>
+      <br />
+      <br />
+      <br /> -->
+
+
       <li style="text-align: left">
         <font color="blue"> (2) Kafka connector-plugins List 조회 </font>
         <br />
@@ -94,7 +119,7 @@
           placeholder="http://3.36.37.170:8083/connector-plugins"
           value="http://3.36.37.170:8083/connector-plugins"
         />
-        <button name="btnSend" @click="getConnectorList">Request</button>
+        <button name="btnSend" @click="getConnectorPlugins">Request</button>
         <br /><br />
         <span class="item-id"> Response Data </span>
         <br />
@@ -116,6 +141,7 @@
       <br />
       <br />
       <br />
+      <!--
       <li style="text-align: left">
         <font color="blue"> (3) Kafka Topic 생성 </font>
         <br />
@@ -168,6 +194,84 @@
       <br />
       <br />
       <br />
+      -->
+      
+      <li style="text-align: left">
+        <font color="blue"> Kafka connector List 조회 </font>
+        <br />
+
+        <select>
+          <option
+            :key="option.value"
+            v-for="option in selectBoxData"
+            :value="option.value"
+          >
+            {{ option.text }}
+          </option>
+        </select>
+
+        <input
+          type="text"
+          size="35"
+          placeholder="http://3.36.37.170:8083/connectors"
+          value="http://3.36.37.170:8083/connectors"
+        />
+        <button name="btnSend" @click="getConnectorList">Request</button>
+        <br /><br />
+        <span class="item-id"> Response Data </span>
+        <br />
+        <br />
+        <!-- <div class="item-line" v-bind:key="item" v-for="item in connectors">
+          <span class="item-id">{{item}}</span>
+        </div> -->
+
+        <hr />
+
+        <json-viewer
+          :value="connectorList"
+          :expand-depth="5"
+          copyable
+          boxed
+          sort
+        ></json-viewer>
+      </li>
+      <br />
+      <br />
+      <br />
+
+
+        <li style="text-align: left">
+        <font color="blue"> Kafka Connector 삭제 </font>
+        <br />
+        <select>
+          <option
+            :key="option.value"
+            v-for="option in selectBoxData"
+            :value="option.value"
+            :selected="option.value == 'DELETE'"
+          >
+            {{ option.text }}
+          </option>
+        </select>
+
+        <input
+          type="text"
+          size="35"
+          v-model="deleteConnectorName"
+          placeholder="connector name"
+          value=""
+        />
+        <button name="btnSend" @click="deleteConnector">Request</button>
+        
+      </li>
+      <br />
+      <br />
+      <br />
+
+
+
+
+
       <li style="text-align: left">
         <font color="blue"> (4) Kafka Sink Connector (HDFS3) 생성 </font>
         <br />
@@ -242,6 +346,67 @@
           sort
         ></json-viewer>
       </li>
+
+        <br />
+      <br />
+      <br />
+      <li style="text-align: left">
+        <font color="blue"> [5] create Schema </font>
+        <br />
+        <select>
+          <option
+            :key="option.value"
+            v-for="option in selectBoxData"
+            :selected="option.value == 'POST'"
+            :value="option.value"
+          >
+            {{ option.text }}
+          </option>
+        </select>
+
+        <input
+          type="text"
+          size="27"
+          placeholder=""
+          value="http://3.36.37.170:8081/subjects/"
+        />
+        <br /><label>Content-Type:application/vnd.schemaregistry.v2+json</label>
+        <button name="btnSend" @click="createSchema">Request</button>
+
+        <hr />
+        <label>Schema- Name</label>
+        
+        <input
+          type="text"
+          id="SchemaName"
+          v-model="createSchemaName"
+          size="7"
+          :required="true"
+          value="user"
+        />
+        <br />
+        <label>Schema- Fields</label><br />
+        <textarea
+          id="inputFields"
+          cols="58"
+          rows="7"
+          v-model="inputSchemaFields"          
+        >        
+        </textarea>
+        <br />
+
+        <span class="item-id"> Response Data </span>
+        <hr />
+
+        <json-viewer
+          :value="resPostSchema"
+          :expand-depth="5"
+          copyable
+          boxed
+          sort
+        ></json-viewer>
+      </li>
+
       <br />
       <br />
       <br />
@@ -278,16 +443,28 @@
         <button name="btnSend" @click="publishTopicData">Request</button>
 
         <hr />
-        <label>Value Schema (Avro format)</label><br />
+        <label>Schema - Id</label>
+        
+        <input
+          type="text"
+          id="schemaId"
+          v-model="schemaIdOfPostTopic"
+          size="7"
+          :required="true"
+          placeholder="user"
+          value="user"
+        />
+        <br />
+        <!-- <label>ValueSchema- Fields</label><br />
         <textarea
-          id="valueSchema"
+          id="inputFields"
           cols="58"
           rows="7"
-          v-model="valueSchema"
-          placeholder='{"name":"int","type": "int"}'
+          v-model="inputFields"
+          placeholder='[{"name":"id","type": "string", "doc":"customer id"}]'
         >
         </textarea>
-        <br />
+        <br /> -->
 
         <label>Records</label><br />
         <textarea id="records" cols="58" rows="7" v-model="records"> </textarea>
@@ -314,6 +491,8 @@ const config = {
   baseUrl: "http://ec2-3-36-37-170.ap-northeast-2.compute.amazonaws.com:8082",
   connectorUrl:
     "http://ec2-3-36-37-170.ap-northeast-2.compute.amazonaws.com:8083",
+    schemaUrl:
+    "http://ec2-3-36-37-170.ap-northeast-2.compute.amazonaws.com:8081",
 };
 
 export default {
@@ -335,7 +514,14 @@ export default {
       connTopicName: "",
       resPostTopic: {},
       valueSchema: {},
+      inputFields:[],
       records: [],
+      valueSchemaName: '',
+      connectorList:[],
+      deleteTopicName:'',
+      deleteConnectorName:'',
+      resPostSchema:{},
+      schemaIdOfPostTopic:''
     };
   },
   created() {
@@ -350,18 +536,39 @@ export default {
         { value: "DELETE", text: "DELETE" },
       ];
 
-      this.valueSchema = JSON.stringify({ name: "int", type: "int" });
+      // this.inputFields =JSON.stringify(
+      //   [
+      //     {"name":"id","type": "string","default":null, "doc":"customer id"},
+      //     {"name":"age","type": "int", "default":null,"doc":"age"},
+      //     {"name":"job","type": "string","default":null, "doc":"job"},
+      //   ]
+      // )
 
-      this.records = JSON.stringify([
-        {
-          value: 12,
-        },
-        {
-          value: 24,
-          partition: 1,
-        },
-      ]);
+      this.inputFields= JSON.stringify([
+          {"name":"id","type": "string","default":null, "doc":"customer id"},
+          {"name":"age","type": "int", "default":null,"doc":"age"},
+          {"name":"job","type": "string","default":null, "doc":"job"}
+        ])
+
+      this.records =JSON.stringify([
+        {"value":{
+          "id":"customer1",
+          "age": 30,
+          "job":"it"
+        }},
+        {"value":{
+          "id":"customer2",
+          "age": 45,
+          "job":"engineer"
+        }}
+      ])
+
+      this.createSchemaName=''
+      this.inputSchemaFields=JSON.stringify([{"name":"id","type": "string", "doc":"customer id"},
+                              {"name":"name","type": "string", "doc":"customer name"}])
+    
     },
+    /*
     //Vue.use(AxiosPlugin)
     getAxiosCors: function () {
       const options = {
@@ -382,27 +589,27 @@ export default {
 
       this.$axios(options)
         .then((res) => {
-          console.log("suceeded!");
+          console.log("successed!");
           console.log(res);
         })
         .catch((err) => {
           console.error("failed." + err);
         });
     },
-
+    */
     //main.js -> Vue.prototype.$http =axios
-    getGobalAxios: function () {
-      this.$http
-        .get(`${config.baseUrl}/topics`, {
-          headers: {},
-        })
-        .then((result) => {
-          console.log(result);
-        })
-        .catch((e) => {
-          console.log("error:", e);
-        });
-    },
+    // getGobalAxios: function () {
+    //   this.$http
+    //     .get(`${config.baseUrl}/topics`, {
+    //       headers: {},
+    //     })
+    //     .then((result) => {
+    //       console.log(result);
+    //     })
+    //     .catch((e) => {
+    //       console.log("error:", e);
+    //     });
+    // },
     getTopicList: function () {
       this.topics = [];
       this.$axios
@@ -416,6 +623,7 @@ export default {
         .then((res) => {
           console.log("Success!!!!");
           console.log(res);
+          alert(res.data)
           this.topics = res.data;
         })
         .catch((err) => {
@@ -423,6 +631,7 @@ export default {
           console.error(err);
         });
     },
+    //topic 한건의 설정정보 조회
     getTopicInfo: function (topicName, responseTarget) {
       this.topics = [];
       let url = `${config.baseUrl}/topics/`;
@@ -445,7 +654,30 @@ export default {
           console.log(err);
         });
     },
-    getConnectorList: function () {
+    deleteTopic: function () {
+      let url = `${config.baseUrl}/topics/`;
+      url += this.deleteTopicName;
+
+      // alert(url)
+      this.$axios
+        .delete(
+          url,
+          {
+            // data: this.data,
+          },
+          {}
+        )
+        .then((res) => {
+          alert('Success Delete Topic')
+          console.log(res)
+        })
+        .catch((err) => {
+          // return err
+          console.log(err);
+          alert(err)
+        });
+    },
+    getConnectorPlugins: function () {
       this.connectors = [];
 
       //import AxiosPlugin from 'vue-axios-cors' -> this.$axios
@@ -467,6 +699,55 @@ export default {
         .catch((err) => {
           console.error("error !!!");
           console.error(err);
+        });
+    },
+    getConnectorList: function () {
+      this.connectorList = [];
+      //import AxiosPlugin from 'vue-axios-cors' -> this.$axios
+      this.$axios
+        .get(
+          `${config.connectorUrl}/connectors`,
+          {
+            // data: this.data,
+          },
+          {
+            //header config
+          }
+        )
+        .then((res) => {
+          console.log("Success!!!!")
+          console.log(res)
+          this.connectorList = res.data
+        })
+        .catch((err) => {
+          alert(err)
+          console.error("error !!!")
+          console.error(err)
+        });
+    },
+    deleteConnector: function () {
+
+      let url=`${config.connectorUrl}/connectors/`
+      url += this.deleteConnectorName
+
+      //import AxiosPlugin from 'vue-axios-cors' -> this.$axios
+      this.$axios
+        .delete(
+          url,
+          {
+            // data: this.data,
+          },
+          {
+            //header config
+          }
+        )
+        .then((res) => {
+          alert("Success delete Connector")
+          console.log(res)
+          
+        })
+        .catch((err) => {
+          alert(err)
         });
     },
 
@@ -522,6 +803,46 @@ export default {
         });
     }, //end function
 
+    createSchema: function () {
+      if (!this.createSchemaName) {
+        alert("Schema 이름을 입력하세요");
+        return;
+      }
+      this.resPostSchema = {}
+      var url = `${config.schemaUrl}/subjects/`
+      url += this.createSchemaName
+      let fields= this.inputSchemaFields
+      
+      let schema={
+        "type":"record",
+        "name":this.createSchemaName,
+        "fields":fields //배열타입이어야됨.
+      }
+
+      console.log(schema)
+      // return;
+      const HTTP = axios.create({
+        baseURL: url,
+        headers: {
+          "Content-Type": "application/vnd.schemaregistry.v2+json", 
+        },
+      });
+
+      HTTP.post("", {
+        "schema":schema
+      })
+        .then((response) => {
+          alert("Success create Schema!");
+          this.resPostSchema=response.data
+          // this.getTopicInfo(this.topicName, this.resPostTopic);
+        })
+        .catch((e) => {
+          console.log("Error: " + e);
+          alert("fail to Create Schema!");
+          this.resPostSchema = e;
+        });
+    }, //end function
+
     publishTopicData: function () {
       if (!this.topicName) {
         alert("토픽이름을 입력하세요");
@@ -531,24 +852,63 @@ export default {
       var url = `${config.baseUrl}/topics/`
       url += this.topicName
 
-      let dataAvro = this.records;
-      let valueSchema = this.valueSchema;
+      let dataAvro = this.records
+      // let valueSchema = this.valueSchema
+      // let inputFields= this.inputFields
+      // let inputFields= 
+      let tmpFields =
+        [
+          {"name":"id","type": "string","default":null, "doc":"customer id"},
+          {"name":"age","type": "int", "default":null,"doc":"age"},
+          {"name":"job","type": "string","default":null, "doc":"job"}
+        ]
+
+      // let valueSchemaName=this.valueSchemaName
+      // if(!valueSchemaName){
+      //   alert("input ValueSchema Name")
+      //   return
+      // }
+      
+      // let tmpF  = JSON.parse(this.inputFields)
+      let tmpD= JSON.parse(dataAvro)
+      // let tmpA =[{"1":"aa"}]
+      // console.log(">>>>>>>>>>>>>>>>>>>>"+typeof tmpA)
+      // console.log(">>>>>>>>>>>>>>>>>>>>"+typeof tmpF)
+      // console.log(">>>>>>>>>>>>>>>>>>>>"+typeof tmpD)
+// return;
+
+      let valueSch={
+        "namespace":"avro.test",
+        "type":"record",
+        // "name":valueSchemaName,
+        // "fields":this.inputFields   //배열타입이어야됨.
+        // "fields":tmpFields  //배열타입이어야됨.
+        "fields":tmpF //배열타입이어야됨.
+      }
+
+      // console.log(valueSch)
+      let tmpData= [{"id":"customer1", "age":1, "job":"test"},{"id":"customer2", "age":2, "job":"test2"}]
 
       // const qs = require('qs');
       const HTTP = axios.create({
         baseURL: url,
         headers: {
-          "Content-Type": "application/vnd.kafka.avro.v2+json", //avro format
+          // "Content-Type": "application/vnd.kafka.avro.v2+json", //avro format
+          "Content-Type": "application/vnd.kafka.avro.v2+json", 
         },
       });
 
       HTTP.post("", {
-        //avro format
-        value_schema: valueSchema,
-        records: JSON.parse(dataAvro),
+        //1. avro schema with data
+        // "value_schema": JSON.stringify(valueSch),  //json string
+        // "records": dataAvro   //배열타입이어야됨.        
+    
+        // "value_schema": JSON.stringify(valueSch),
+        "value_schema_id":this.schemaIdOfPostTopic,
+        "records":tmpD
       })
         .then((response) => {
-          alert("Success Publish Topic!");
+          alert("Success Pubish Topic!");
           this.resPostTopic=response.data
           // this.getTopicInfo(this.topicName, this.resPostTopic);
         })
