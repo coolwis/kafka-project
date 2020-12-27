@@ -16,20 +16,9 @@
       </li>
     </ul>
 
-    <h1>[1] HDFS3</h1>
-    <ul>
-      <li>
-        <a
-          href="http://ec2-3-35-204-140.ap-northeast-2.compute.amazonaws.com:9870/explorer.html#/topics"
-          target="_blank"
-        >
-          Hadoop Topic Data 조회
-        </a>
-      </li>
-    </ul>
-    <br />
+    
 
-    <h1>[2] kafka Rest Api</h1>
+    <h1>[1] kafka Rest Api</h1>
     <br />
     <ul class="list">
       <li style="text-align: left">
@@ -141,63 +130,9 @@
       <br />
       <br />
       <br />
-      <!--
+   
       <li style="text-align: left">
-        <font color="blue"> (3) Kafka Topic 생성 </font>
-        <br />
-
-        <select>
-          <option
-            :key="option.value"
-            v-for="option in selectBoxData"
-            :selected="option.value == 'POST'"
-            :value="option.value"
-          >
-            {{ option.text }}
-          </option>
-        </select>
-
-        <input
-          type="text"
-          size="24"
-          placeholder=""
-          value="http://3.35.204.140:8082/topics/"
-        />
-        <input
-          type="text"
-          id="newtopicName"
-          v-model="topicName"
-          size="7"
-          :required="true"
-          placeholder="생성할 Topic Name"
-          value=""
-        />
-        <br /><label>Content-Type:application/vnd.kafka.avro.v2+json</label>
-        <button name="btnSend" @click="createTopic">Request</button>
-
-        <br />
-        <br />
-        <span class="item-id"> Response Data </span>
-        <br />
-        <br />
-
-        <hr />
-
-        <json-viewer
-          :value="resTopicCreate"
-          :expand-depth="5"
-          copyable
-          boxed
-          sort
-        ></json-viewer>
-      </li>
-      <br />
-      <br />
-      <br />
-      -->
-      
-      <li style="text-align: left">
-        <font color="blue"> Kafka connector List 조회 </font>
+        <font color="blue">(2.1) Kafka connector List 조회 </font>
         <br />
 
         <select>
@@ -239,9 +174,51 @@
       <br />
       <br />
 
+       <li style="text-align: left">
+        <font color="blue">(2.2) Kafka connector Config 조회 </font>
+        <br />
+
+        <select>
+          <option
+            :key="option.value"
+            v-for="option in selectBoxData"
+            :value="option.value"
+          >
+            {{ option.text }}
+          </option>
+        </select>
+        <span> http://3.35.204.140:8083/connectors/ </span>
+        <input
+          type="text"
+          size="7"
+          :required=true
+          v-model="connectorName"
+          placeholder="Connector Name"
+          value=""
+        />
+        <button name="btnSend" @click="getConnectorInfo">Request</button>
+        <br /><br />
+        <span class="item-id"> Response Data </span>
+        <br />
+        <br />
+       
+        <hr />
+
+        <json-viewer
+          :value="resConnectorInfo"
+          :expand-depth="5"
+          copyable
+          boxed
+          sort
+        ></json-viewer>
+      </li>
+      <br />
+      <br />
+      <br />
+
 
         <li style="text-align: left">
-        <font color="blue"> Kafka Connector 삭제 </font>
+        <font color="blue">(3) Kafka Connector 삭제 </font>
         <br />
         <select>
           <option
@@ -351,7 +328,7 @@
       <br />
       <br />
       <li style="text-align: left">
-        <font color="blue"> [5] create Schema </font>
+        <font color="blue"> (5) create Schema </font>
         <br />
         <select>
           <option
@@ -414,8 +391,10 @@
         ></json-viewer>
       </li>
       <br/>
+      <br/>
+
    <li style="text-align: left">
-        <font color="blue"> Schema List 조회 </font>
+        <font color="blue">(5.1) Schema List 조회 </font>
         <br />
 
         <select>
@@ -430,7 +409,7 @@
 
         <input
           type="text"
-          size="35"
+          size="40"
           :required=true
           v-model="schemaListUrl"
           placeholder="http://3.35.204.140:8081/subjects"
@@ -455,7 +434,7 @@
       <br />
 
       <li style="text-align: left">
-        <font color="blue"> Schema Config 조회 </font>
+        <font color="blue">(5.2) Schema Config 조회 </font>
         <br />
 
         <select>
@@ -504,7 +483,7 @@
       <br />
       <br />
       <li style="text-align: left">
-        <font color="blue"> (5) Publish Kafka Topic Data </font>
+        <font color="blue"> (6) Publish Kafka Topic Data </font>
         <br />
         <select>
           <option
@@ -532,9 +511,9 @@
           :required="true"
           placeholder="Topic Name"
           value=""
-        />
+        />  <button name="btnSend" @click="publishTopicData">Create</button>
         <br /><label>Content-Type:application/vnd.kafka.avro.v2+json</label>
-        <button name="btnSend" @click="publishTopicData">Request</button>
+       
 
         <hr />
         <label>Schema - Id</label>
@@ -550,11 +529,8 @@
         />
         <br />
         
-        <label>Records</label><br />
-        <!-- <textarea id="records" cols="58" rows="7" v-model="records"> </textarea> -->
-
-
-        <button name="btnSend" @click="addRecord">Add Record</button>
+        <label>Records</label>  <button name="btnSend" @click="addRecord">Add Record</button>
+        <br/><span> ex) {"name":"hong gil dong", "job":"SI"} </span>
         <div class="item-line" v-bind:key="item.id" v-for="item in records">
           <span class="item-id"> Value: </span> <input type="text" size="40" :required="true" v-model="item.value">
           <button name="btnDelRecord" @click="deleteRecord(item)">Delete</button>
@@ -573,6 +549,21 @@
         ></json-viewer>
       </li>
     </ul>
+    <br/>
+    <br/>
+    <br/>
+    <h1>[2] HDFS3</h1>
+    <ul>
+      <li>
+        <a
+          href="http://ec2-3-35-204-140.ap-northeast-2.compute.amazonaws.com:9870/explorer.html#/topics"
+          target="_blank"
+        >
+          Hadoop Topic Data 조회
+        </a>
+      </li>
+    </ul>
+    <br />
   </div>
 </template>
 
@@ -622,7 +613,9 @@ export default {
       resSchemaList:{},
       schemaListUrl:'',
       resSchemaInfo:{},
-      schemaInfoUrl:''
+      schemaInfoUrl:'',
+      resConnectorInfo:{},
+      connectorName:''
     };
   },
   created() {
@@ -651,7 +644,7 @@ export default {
 
       this.schemaListUrl="http://3.35.204.140:8081/subjects"
 
-      // this.schemaInfoUrl="http://3.35.204.140:8081/subjects/{schema name}/versions/latest"
+      this.addRecord()
     },
    
     getTopicList: function () {
@@ -745,6 +738,7 @@ export default {
           console.error(err);
         });
     },
+    
     getConnectorList: function () {
       this.connectorList = [];
       //import AxiosPlugin from 'vue-axios-cors' -> this.$axios
@@ -765,6 +759,35 @@ export default {
         })
         .catch((err) => {
           alert(err)
+          console.error("error !!!")
+          console.error(err)
+        });
+    },
+
+    getConnectorInfo: function () {
+      this.resConnectorInfo = {}
+      let url =`${config.connectorUrl}/connectors/`
+      url +=this.connectorName
+     
+      //import AxiosPlugin from 'vue-axios-cors' -> this.$axios
+      this.$axios
+        .get(
+          url,
+          {
+            // data: this.data,
+          },
+          {
+            //header config
+          }
+        )
+        .then((res) => {
+          console.log("Success!!!!")
+          console.log(res)
+          this.resConnectorInfo = res.data
+        })
+        .catch((err) => {
+          alert(err)
+          this.resConnectorInfo=err
           console.error("error !!!")
           console.error(err)
         });
@@ -984,21 +1007,16 @@ createSchema: function () {
       url += this.topicName
 
       let dataAvro=[]
-      // this.records.forEach(element=>{
-      //   dataAvro.push(JSON.parse(element.value))
-      //   console.log(element.value)
-      // })
+      this.records.forEach(element=>{
+        dataAvro.push( {"value":JSON.parse(element.value)})
+        console.log(element.value)
+      })
 
-      // console.log(Array.isArray(dataAvro))
+      console.log(Array.isArray(dataAvro))
+      console.log(dataAvro.toString())
      
-
-     //test
-     dataAvro=[{"name":"nn1","job":"j1"},
-     {"name":"n2","job":"j2"}
-     ]
-     
-
-
+    //  //test
+    //  dataAvro=[{"value":{"id":"j1"}}]
       const HTTP = axios.create({
         baseURL: url,
         headers: {
@@ -1007,10 +1025,9 @@ createSchema: function () {
       });
 
       HTTP.post("", {
-        //1. avro schema with data
-              
+        //1. avro schema with data              
         "value_schema_id":this.schemaIdOfPostTopic,
-        "records": dataAvro   //배열타입이어야됨.  
+        "records":dataAvro //배열타입이어야됨.  
       })
         .then((response) => {
           alert("Success Pubish Topic!");
