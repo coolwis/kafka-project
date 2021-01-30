@@ -1,6 +1,17 @@
 # kafka-project
 
-> A Vue.js project
+> UI  Vue.js
+
+## kafka Rest Api 호출 
+  topic 생성 api
+ schema Registry 등록 api
+ 
+  connector  생성 api
+  publish topic api
+
+## kafka connector
+kakfa hdfs3 connector 를 통해서  hadoop 에 데이터 적재 가능 
+
 
 ## Build Setup
 
